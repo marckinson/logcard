@@ -330,6 +330,7 @@ func (t *SimpleChaincode) getPart(stub shim.ChaincodeStubInterface, partId strin
 	fmt.Println("Looking for Part #" + partId);
 
 	//get the part index
+	partId = args [0]
 	pAsBytes, err := stub.GetState(partId)
 	if err != nil {
 		return nil, errors.New("Failed to get Part #" + partId)
