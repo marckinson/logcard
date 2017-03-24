@@ -94,10 +94,10 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
     }
 
 	var err error 						// declaration de la variable err de type error
-	var parts AllParts 					// declaration de la variable parts de type AllParts 
+	// var parts AllParts 					// declaration de la variable parts de type AllParts 
 	
-	jsonAsBytes, _ := json.Marshal(parts)
-	err = stub.PutState("allParts", jsonAsBytes)  
+	// jsonAsBytes, _ := json.Marshal(parts)
+	err = stub.PutState("all parts", []byte(args[0]))  //le deuxième argument jsonAsBytes
 	
 	if err != nil {
 		return nil, err
