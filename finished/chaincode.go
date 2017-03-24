@@ -2,37 +2,39 @@
 Dans cette première implémentation les LogCard correspondent aux Parts
 */
 
-
 package main
 
 import (
 	"errors"
 	"fmt"
 	"encoding/json"
-	
-
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
-// =======
-// Actors 
-// =======
-const   SUPPLIER = "SUPPLIER" 								
-const   MT_USER = "MT_USER" 								
-const 	CUSTOMER = "CUSTOMER" 								 
-const 	CERTIFIER = "CERTIFIER" 							
-const	AH = "AH" 										
-const   SHIPPING = "SHIPPING"							
+//===============================================================================================================================
+//	 Participant types 
+//==============================================================================================================================
+const   SUPPLIER 	= "Suppliers" 								
+const   MT_USER 	= "MRO_User" 								
+const 	CUSTOMER 	= "customer" 								 
+const 	CERTIFIER 	= "EASAA_FAA" 							
+const	AH 			= "AribusHelicopter" 										
+const   SHIPPING 	= "shipping_company"							
 
 
-
-// SimpleChaincode example simple Chaincode implementation
+//==============================================================================================================================
+//	 Structure Definitions
+//==============================================================================================================================
+//	Chaincode - A blank struct for use with Shim (A HyperLedger included go file used for get/put state
+//				and other HyperLedger functions)
+//==============================================================================================================================
 type SimpleChaincode struct {
 }
 
-// ======
-// Assets
-//=======
+//==============================================================================================================================
+//	Part - Defines the structure for a part object. JSON on right tells it what JSON fields to map to
+//			  that element when reading a JSON object into the struct e.g. JSON make -> Struct Make.
+//==============================================================================================================================
 type Part struct { // Part et eLogcard sont regroupés dans cette première version
 	Id   		string  `json:"id"` 					// Concaténation des deux PN et SN
 	PN			string 	`json:"pn"` 					// Part Number
@@ -44,6 +46,9 @@ type Part struct { // Part et eLogcard sont regroupés dans cette première vers
 	Logs        []Log 	`json:"logs"` 					// Correspondent au Log 
 }
 
+//================================================================================================================================
+//	Part - Defines the structure for a log object. It represents transactions for a part, states changes, maintenance tasks, etc..
+//================================================================================================================================
 type Log struct { // remplacement de transaction par Log
 	PType  		string  `json:"pType"`
 	Responsible string  `json:"responsible"`  
@@ -53,21 +58,32 @@ type Log struct { // remplacement de transaction par Log
 	LType 		string   `json:"ttype"` 
 }
 
+//================================================================================================================================
+//	Part - Defines the structure for a AllParts object. It represents all the parts ..
+//================================================================================================================================
 type AllParts struct{  
 	Parts []string `json:"parts"`
 }
 
+//================================================================================================================================
+//	Part - Defines the structure for a AllPartsDetails object. It represents all the parts with their content.
+//================================================================================================================================
 type AllPartsDetails struct{ 
 	Parts []Part `json:"parts"`
 }
 
+//================================================================================================================================
+//	Part - Defines the structure for a Aircraft object. It represents the AirCraft.
+//================================================================================================================================
 type Aircraft struct{ 
 	Id   	string `json:"id"` 
 	AType  	string  `json:"aType"` 				
 	Owner  	string  `json:"owner"`
 	Parts 	[]Part `json:"parts"`
 }
-
+//================================================================================================================================
+//	Part - Defines the structure for a AllAircraft object. It represents all the aircrafts.
+//================================================================================================================================
 type AllAircraft struct {
 	Airfcrafts []string `json:"aircrafts"`
 }
@@ -82,12 +98,9 @@ func main() {
 	}
 }
 
-
-// ============================================================================================================================
-// Init is called during deploy
-// Init is called when you first deploy your chaincode. 
-// As the name implies, this function should be used to do any initialization your chaincode needs
-// ============================================================================================================================
+//==============================================================================================================================
+//	Init Function - Called when the user deploys the chaincode
+//==============================================================================================================================
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
     if len(args) != 1 {
         return nil, errors.New("Incorrect number of arguments. Expecting 1")
@@ -105,7 +118,6 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	
 	return nil, nil
 }
-
 
 // ============================================================================================================================
 // Run - Our entry point for Invocations - [LEGACY] obc-peer 4/25/2016
@@ -140,15 +152,15 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
     return nil, errors.New("Received unknown function invocation")
 }
 
-
-
-// ==============================
+// ================================================================================================================================
 // Functions Handled by Invoke
-// ==============================
-
-// ================================================================================
-// Create new Part of Items _ de façon simplifier c'est la création de la logCard
-// ================================================================================
+// ================================================================================================================================
+//=================================================================================================================================
+//	 Create Function
+//=================================================================================================================================
+// ================================================================================================================================
+// Creation of the Part ( creation of the eLogcard)
+// ================================================================================================================================
 
 func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
@@ -218,9 +230,12 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 	return nil, nil
 }
 
-// =================================================================================
+//=================================================================================================================================
+//	 Transfer Functions
+//=================================================================================================================================
+// ================================================================================================================================
 // Transfer a part = Transfert physique de la part & Transfert de la responsabilité
-// =================================================================================
+// ================================================================================================================================
 func (t *SimpleChaincode) transferPart_Responsility(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 	var err error
@@ -272,9 +287,12 @@ func (t *SimpleChaincode) transferPart_Responsility(stub shim.ChaincodeStubInter
 	return nil, nil
 }
 
-// ======================================================================
+//=================================================================================================================================
+//	 Claim Functions
+//=================================================================================================================================
+// ================================================================================================================================
 // Claim the ownership on a part = Correspond au transfert de propriété
-// ======================================================================
+// ================================================================================================================================
 func (t *SimpleChaincode)claimOwnershipOnPart(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 	var err error
@@ -323,13 +341,10 @@ func (t *SimpleChaincode)claimOwnershipOnPart(stub shim.ChaincodeStubInterface, 
 	return nil, nil
 }
 
-
 // ===========================================================================================================================================
 // Query - read a variable from chaincode state - (aka read) _ As the name implies, Query is called whenever you query your chaincode's state. 
 // Queries do not result in blocks being added to the chain. 
 // You cannot use functions like PutState inside of Query or any helper functions it calls. 
-// You will use Query to read the value of your chaincode state's key/value pairs.
-// Query is our entry point for queries Marckinson
 // ============================================================================================================================================
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
     fmt.Println("query is running " + function)
@@ -345,9 +360,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
     return nil, errors.New("Received unknown function query")
 }
 
-// ===========================
+// =============================================================================================================================================
 // Functions Handled by Query
-// ===========================
+// =============================================================================================================================================
 
 
 // =================
