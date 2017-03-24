@@ -1,3 +1,8 @@
+/*
+Dans cette première implémentation les LogCard correspondent aux Parts
+*/
+
+
 package main
 
 import (
@@ -9,6 +14,9 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
+// =======
+// Actors 
+// =======
 const   SUPPLIER = "SUPPLIER" 								
 const   MT_USER = "MT_USER" 								
 const 	CUSTOMER = "CUSTOMER" 								 
@@ -17,10 +25,14 @@ const	AH = "AH"
 const   SHIPPING = "SHIPPING"							
 
 
+
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
 
+// ======
+// Assets
+//=======
 type Part struct { // Part et eLogcard sont regroupés dans cette première version
 	Id   		string  `json:"id"` 					// Concaténation des deux PN et SN
 	PN			string 	`json:"pn"` 					// Part Number
@@ -70,18 +82,27 @@ func main() {
 	}
 }
 
+
+// ============================================================================================================================
+// Init is called during deploy
+// Init is called when you first deploy your chaincode. 
+// As the name implies, this function should be used to do any initialization your chaincode needs
+// ============================================================================================================================
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
     if len(args) != 1 {
         return nil, errors.New("Incorrect number of arguments. Expecting 1")
     }
 
-	var err error
-	var parts AllParts
+	var err error 						// declaration de la variable err de type error
+	var parts AllParts 					// declaration de la variable parts de type AllParts 
+	
 	jsonAsBytes, _ := json.Marshal(parts)
-	err = stub.PutState("allParts", jsonAsBytes)
+	err = stub.PutState("allParts", jsonAsBytes)  
+	
 	if err != nil {
 		return nil, err
 	}	
+	
 	return nil, nil
 }
 
@@ -94,12 +115,10 @@ func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []
 	return t.Invoke(stub, function, args)
 }
 
-
 // ============================================================================================================================
+// Invoke is our entry point to invoke a chaincode function
 // Run - Our entry point _ Invoke is called when an invoke message is received
 // ============================================================================================================================
-
-// Invoke is our entry point to invoke a chaincode function
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
     fmt.Println("invoke is running " + function)
 
@@ -119,9 +138,15 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
     return nil, errors.New("Received unknown function invocation")
 }
 
-// ============================================================================================================================
+
+
+// ==============================
+// Functions Handled by Invoke
+// ==============================
+
+// ================================================================================
 // Create new Part of Items _ de façon simplifier c'est la création de la logCard
-// ============================================================================================================================
+// ================================================================================
 
 func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
@@ -191,9 +216,9 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 	return nil, nil
 }
 
-// ============================================================================================================================
+// =================================================================================
 // Transfer a part = Transfert physique de la part & Transfert de la responsabilité
-// ============================================================================================================================
+// =================================================================================
 func (t *SimpleChaincode) transferPart_Responsility(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 	var err error
@@ -245,9 +270,9 @@ func (t *SimpleChaincode) transferPart_Responsility(stub shim.ChaincodeStubInter
 	return nil, nil
 }
 
-// ============================================================================================================================
+// ======================================================================
 // Claim the ownership on a part = Correspond au transfert de propriété
-// ============================================================================================================================
+// ======================================================================
 func (t *SimpleChaincode)claimOwnershipOnPart(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 	var err error
@@ -297,15 +322,13 @@ func (t *SimpleChaincode)claimOwnershipOnPart(stub shim.ChaincodeStubInterface, 
 }
 
 
-// ============================================================================================================================
+// ===========================================================================================================================================
 // Query - read a variable from chaincode state - (aka read) _ As the name implies, Query is called whenever you query your chaincode's state. 
-// Queries do not result in blocks being added to the chain, and you cannot use functions like PutState inside of Query or any helper functions it calls. 
+// Queries do not result in blocks being added to the chain. 
+// You cannot use functions like PutState inside of Query or any helper functions it calls. 
 // You will use Query to read the value of your chaincode state's key/value pairs.
-// ============================================================================================================================
-
-
 // Query is our entry point for queries Marckinson
-
+// ============================================================================================================================================
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
     fmt.Println("query is running " + function)
 
@@ -313,17 +336,21 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
     if function == "getPart" {return t.getPart(stub, args[0])}
 	if function == "getAllParts" { return t.getAllParts(stub, args[0]) }
 	if function == "getAllPartsDetails" { return t.getAllPartsDetails(stub, args[0]) }
+	if function == "read" {	return t.read(stub, args)}
 	
     fmt.Println("query did not find func: " + function)
 
     return nil, errors.New("Received unknown function query")
 }
 
+// ===========================
+// Functions Handled by Query
+// ===========================
 
 
-// ============================================================================================================================
+// =================
 // Get Part Details
-// ============================================================================================================================
+// =================
 func (t *SimpleChaincode) getPart(stub shim.ChaincodeStubInterface, partId string)([]byte, error){
 	
 	fmt.Println("Start find Part")
@@ -334,15 +361,14 @@ func (t *SimpleChaincode) getPart(stub shim.ChaincodeStubInterface, partId strin
 	if err != nil {
 		return nil, errors.New("Failed to get Part #" + partId)
 	}
-
 	
 	return pAsBytes, nil
 	
 }
 
-// ============================================================================================================================
+// ===============
 // Get All Parts 
-// ============================================================================================================================
+// ===============
 func (t *SimpleChaincode) getAllParts(stub shim.ChaincodeStubInterface, user string)([]byte, error){
 	
 	fmt.Println("Start find getAllParts ")
@@ -381,9 +407,9 @@ func (t *SimpleChaincode) getAllParts(stub shim.ChaincodeStubInterface, user str
 }
 
 
-// ============================================================================================================================
+// ============================================
 // Get All Parts Details for a specific user
-// ============================================================================================================================
+// ============================================
 func (t *SimpleChaincode) getAllPartsDetails(stub shim.ChaincodeStubInterface, user string)([]byte, error){
 	
 	fmt.Println("Start find getAllPartsDetails ")
@@ -426,3 +452,22 @@ func (t *SimpleChaincode) getAllPartsDetails(stub shim.ChaincodeStubInterface, u
 }
 
 
+
+// read - query function to read key/value pair
+func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var key, jsonResp string
+	var err error
+
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting name of the key to query")
+	}
+
+	key = args[0]
+	valAsbytes, err := stub.GetState(key)
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+
+	return valAsbytes, nil
+}
