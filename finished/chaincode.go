@@ -88,15 +88,6 @@ type AllAircraft struct {
 	Airfcrafts []string `json:"aircrafts"`
 }
 
-// ============================================================================================================================
-// Main
-// ============================================================================================================================
-func main() {
-	err := shim.Start(new(SimpleChaincode))
-	if err != nil {
-		fmt.Printf("Error starting Simple chaincode: %s", err)
-	}
-}
 
 //==============================================================================================================================
 //	Init Function - Called when the user deploys the chaincode
@@ -507,4 +498,14 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 		return nil, err
 	}
 	return nil, nil
+}
+
+//=================================================================================================================================
+//	 Main - main - Starts up the chaincode
+//=================================================================================================================================
+func main() {
+	err := shim.Start(new(SimpleChaincode))
+	if err != nil {
+		fmt.Printf("Error starting Simple chaincode: %s", err)
+	}
 }
