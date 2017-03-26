@@ -100,17 +100,18 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	// Initialize the chaincode
 	// Qu'est ce qu'on doit mettre ici ?????
 	
+	/*
+	Test du Network (Read, write)
+	Write the state to the ledger
+	err = stub.PutState("allParts", []byte(args[0]))  			
+	if err != nil {
+		return nil, err
+	}	
+	*/
 	
-	// Test du Network (Read, write)
-	// Write the state to the ledger
-	//err = stub.PutState("allParts", []byte(args[0]))  			//
-	//if err != nil {
-	//	return nil, err
-	//}	
-		
 	var parts AllParts 											// array of string a la place de AllParts	?? // déclaration de la variable parts de type AllParts 
 	jsonAsBytes, _ := json.Marshal(parts)   					// marshal de cet asset AllParts 
-	err = stub.PutState("allParts", jsonAsBytes)  				//
+	err = stub.PutState("allParts",jsonAsBytes)  				//
 	if err != nil {
 		return nil, err
 	}	
@@ -373,10 +374,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 // Functions Handled by Query
 // =============================================================================================================================================
 
-
-// =================
+// =========================================================================================================================================
 // Get Part Details
-// =================
+// =========================================================================================================================================
 func (t *SimpleChaincode) getPart(stub shim.ChaincodeStubInterface, partId string)([]byte, error){
 	
 	fmt.Println("Start find Part")
@@ -392,9 +392,9 @@ func (t *SimpleChaincode) getPart(stub shim.ChaincodeStubInterface, partId strin
 	
 }
 
-// ===============
+// =======================================================================================================================================
 // Get All Parts 
-// ===============
+// =======================================================================================================================================
 func (t *SimpleChaincode) getAllParts(stub shim.ChaincodeStubInterface, user string)([]byte, error){
 	
 	fmt.Println("Start find getAllParts ")
@@ -433,9 +433,9 @@ func (t *SimpleChaincode) getAllParts(stub shim.ChaincodeStubInterface, user str
 }
 
 
-// ============================================
+// =================================================================================================================================
 // Get All Parts Details for a specific user
-// ============================================
+// =================================================================================================================================
 func (t *SimpleChaincode) getAllPartsDetails(stub shim.ChaincodeStubInterface, user string)([]byte, error){
 	
 	fmt.Println("Start find getAllPartsDetails ")
@@ -478,9 +478,13 @@ func (t *SimpleChaincode) getAllPartsDetails(stub shim.ChaincodeStubInterface, u
 }
 
 
+// =============================================================================================================================================
+// Test Functions 
+// =============================================================================================================================================
 
-// A enlever
+// ================================================================================================================================
 // read - query function to read key/value pair
+// ================================================================================================================================
 func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, jsonResp string
 	var err error
@@ -499,9 +503,9 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	return valAsbytes, nil
 }
 
-// A enlever
-// write - invoke function to write key/value pair
-
+// ================================================================================================================================
+// Write - invoke function to write key/value pair
+// ================================================================================================================================
 func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, value string
 	var err error
@@ -519,6 +523,7 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 	}
 	return nil, nil
 }
+
 
 //=================================================================================================================================
 //	 Main - main - Starts up the chaincode
