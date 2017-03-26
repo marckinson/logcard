@@ -13,7 +13,7 @@ import (
 
 //===============================================================================================================================
 //	 Participant types 
-//==============================================================================================================================
+//===============================================================================================================================
 const   SUPPLIER 	= "Suppliers" 								
 const   MT_USER 	= "MRO_User" 								
 const 	CUSTOMER 	= "customer" 								 
@@ -100,14 +100,14 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	// Initialize the chaincode
 	// Qu'est ce qu'on doit mettre ici ?????
 	
-	/*
-	Test du Network (Read, write)
-	Write the state to the ledger
+
+	// Test du Network (Read, write)
+	// Write the state to the ledger
 	err = stub.PutState("allParts", []byte(args[0]))  			
 	if err != nil {
 		return nil, err
 	}	
-	*/
+
 	
 	var parts AllParts 											// array of string a la place de AllParts	?? // déclaration de la variable parts de type AllParts 
 	jsonAsBytes, _ := json.Marshal(parts)   					// marshal de cet asset AllParts 
@@ -147,12 +147,11 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.transferPart_Responsility(stub, args)
 	} else if function == "claimOwnershipOnPart" {
 		return t.claimOwnershipOnPart(stub, args)
-	
-	/*
-	} else if function == "write" { 						// à enlever plus tard 
-		return t.write(stub, args)
-	}
-    */
+	} 
+	//else if function == "write" { 						// à enlever plus tard 
+	//	return t.write(stub, args)
+	// }
+
     fmt.Println("invoke did not find func: " + function)
 
     return nil, errors.New("Received unknown function invocation")
@@ -167,7 +166,6 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 // ================================================================================================================================
 // Creation of the Part (creation of the eLogcard)
 // ================================================================================================================================
-
 func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 	fmt.Println("Running createPart")
@@ -177,17 +175,17 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 		return nil, errors.New("Incorrect number of arguments. Expecting 8")
 	}
 
-/*	
-	if args[2] != SUPPLIER{     														// A vérifier la syntaxe 
-		fmt.Println("You are not allowed to create a new part")
-		return nil, errors.New("You are not allowed to create a new part") 
-	}
 
-	if args[2] != AH{     																// Chercher la syntaxe OU 
-		fmt.Println("You are not allowed to create a new part")
-		return nil, errors.New("You are not allowed to create a new part") 
-	}
-*/
+	// if args[2] != SUPPLIER{     														// A vérifier la syntaxe 
+	//	fmt.Println("You are not allowed to create a new part")
+	//	return nil, errors.New("You are not allowed to create a new part") 
+	// }
+
+	//if args[2] != AH{     																// Chercher la syntaxe OU 
+	//	fmt.Println("You are not allowed to create a new part")
+	//	return nil, errors.New("You are not allowed to create a new part") 
+	// }
+
 	
 	var err error
 	
@@ -239,6 +237,7 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 	return nil, nil
 }
 
+
 //=================================================================================================================================
 //	 Transfer Functions
 //=================================================================================================================================
@@ -255,13 +254,11 @@ func (t *SimpleChaincode) transferPart_Responsility(stub shim.ChaincodeStubInter
 		return nil, errors.New("Incorrect number of arguments. Expecting 6")
 	}
 
-//	if args[1] != CUSTOMER { return nil, errors.New("You are not allowed to transfer a part") }
-/*
-	if args[1] != MT_USER { return nil, errors.New("You are not allowed to transfer a part") }
-	if args[1] != SUPPLIER { return nil, errors.New("You are not allowed to transfer a part") }
-	if args[1] != AH { return nil, errors.New("You are not allowed to transfer a part") }
-	if args[1] != SHIPPING { return nil, errors.New("You are not allowed to transfer a part") }
-*/
+	//if args[1] != CUSTOMER { return nil, errors.New("You are not allowed to transfer a part") }
+	//if args[1] != MT_USER { return nil, errors.New("You are not allowed to transfer a part") }
+	//if args[1] != SUPPLIER { return nil, errors.New("You are not allowed to transfer a part") }
+	//if args[1] != AH { return nil, errors.New("You are not allowed to transfer a part") }
+	//if args[1] != SHIPPING { return nil, errors.New("You are not allowed to transfer a part") }
 
 	//Update Part data
 	pAsBytes, err := stub.GetState(args[0])
@@ -313,12 +310,9 @@ func (t *SimpleChaincode)claimOwnershipOnPart(stub shim.ChaincodeStubInterface, 
 		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
 
-	// if args[1] != AH { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
-
-/*
-	if args[1] != SUPPLIER { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
-	if args[1] != CUSTOMER { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
-*/
+	//if args[1] != AH { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
+	//if args[1] != SUPPLIER { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
+	//if args[1] != CUSTOMER { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
 
 	//Update Part owner
 	bAsBytes, err := stub.GetState(args[0])
@@ -483,7 +477,8 @@ func (t *SimpleChaincode) getAllPartsDetails(stub shim.ChaincodeStubInterface, u
 // Test Functions 
 // =============================================================================================================================================
 
-/*
+
+
 // ================================================================================================================================
 // read - query function to read key/value pair
 // ================================================================================================================================
@@ -526,7 +521,6 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 	return nil, nil
 }
 
-*/
 //=================================================================================================================================
 //	 Main - main - Starts up the chaincode
 //=================================================================================================================================
