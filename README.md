@@ -26,7 +26,7 @@ The participants included in the application are as follows:
 | AH      	     | Create, Read, Claim, Transfer							            |
 | MT_USER        | Read, Transfer														|
 | Customer       | Read, Claim, Transfer          								        |
-| Certifier      | Read,										                   		|
+| Certifier      | Read											                   		|
 | Shipping 		 | Transfer       						                                |
 
 

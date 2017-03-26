@@ -18,9 +18,8 @@ const   SUPPLIER 	= "Suppliers"
 const   MT_USER 	= "MRO_User" 								
 const 	CUSTOMER 	= "customer" 								 
 const 	CERTIFIER 	= "EASAA_FAA" 							
-const	AH 			= "AribusHelicopter" 										
+const	AH 			= "AirbusHelicopter" 										
 const   SHIPPING 	= "shipping_company"							
-
 
 //==============================================================================================================================
 //	 Structure Definitions
@@ -88,24 +87,34 @@ type AllAircraft struct {
 	Airfcrafts []string `json:"aircrafts"`
 }
 
-
 //==============================================================================================================================
 //	Init Function - Called when the user deploys the chaincode
 //==============================================================================================================================
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-    if len(args) != 1 {
+    
+
+	var err error 												// déclaration de la variable err de type error
+	// var parts AllParts 											// array of string a la place de AllParts	?? 
+																// déclaration de la variable parts de type AllParts 
+
+	
+	if len(args) != 1 {
         return nil, errors.New("Incorrect number of arguments. Expecting 1")
     }
-
-	var err error 						// declaration de la variable err de type error
-	// var parts AllParts 					// declaration de la variable parts de type AllParts 
+	                 
 	
-	// jsonAsBytes, _ := json.Marshal(parts)
-	err = stub.PutState("all parts", []byte(args[0]))  //le deuxième argument jsonAsBytes
+	// Initialize the chaincode
+	// Qu'est ce qu'on doit mettre ici ?????
 	
+	
+	// Write the state to the ledger
+	// jsonAsBytes, _ := json.Marshal(parts)   					// marshal de cet asset AllParts 
+	err = stub.PutState("all parts", []byte(args[0]))  				//
 	if err != nil {
 		return nil, err
 	}	
+	
+	// Fini 
 	
 	return nil, nil
 }
@@ -134,7 +143,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.transferPart_Responsility(stub, args)
 	} else if function == "claimOwnershipOnPart" {
 		return t.claimOwnershipOnPart(stub, args)
-	} else if function == "write" {
+	} else if function == "write" { 						// à enlever plus tard 
 		return t.write(stub, args)
 	}
     
@@ -461,6 +470,7 @@ func (t *SimpleChaincode) getAllPartsDetails(stub shim.ChaincodeStubInterface, u
 
 
 
+// A enlever
 // read - query function to read key/value pair
 func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, jsonResp string
@@ -480,7 +490,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	return valAsbytes, nil
 }
 
-
+// A enlever
 // write - invoke function to write key/value pair
 func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, value string
