@@ -92,27 +92,30 @@ type AllAircraft struct {
 //==============================================================================================================================
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
     
-
-	var err error 												// déclaration de la variable err de type error
-	// var parts AllParts 											// array of string a la place de AllParts	?? 
-																// déclaration de la variable parts de type AllParts 
-
-	
 	if len(args) != 1 {
         return nil, errors.New("Incorrect number of arguments. Expecting 1")
     }
-	                 
+	var err error 												// déclaration de la variable err de type error             
 	
 	// Initialize the chaincode
 	// Qu'est ce qu'on doit mettre ici ?????
 	
 	
+	// Test du Network (Read, write)
 	// Write the state to the ledger
-	// jsonAsBytes, _ := json.Marshal(parts)   					// marshal de cet asset AllParts 
-	err = stub.PutState("all parts", []byte(args[0]))  				//
+	//err = stub.PutState("allParts", []byte(args[0]))  			//
+	//if err != nil {
+	//	return nil, err
+	//}	
+		
+	var parts AllParts 											// array of string a la place de AllParts	?? // déclaration de la variable parts de type AllParts 
+	jsonAsBytes, _ := json.Marshal(parts)   					// marshal de cet asset AllParts 
+	err = stub.PutState("allParts", jsonAsBytes)  				//
 	if err != nil {
 		return nil, err
 	}	
+	
+	
 	
 	// Fini 
 	
@@ -159,28 +162,31 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 //	 Create Function
 //=================================================================================================================================
 // ================================================================================================================================
-// Creation of the Part ( creation of the eLogcard)
+// Creation of the Part (creation of the eLogcard)
 // ================================================================================================================================
 
 func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
-	var err error
 	fmt.Println("Running createPart")
 
-	if len(args) != 8 { // A verifier 
+	if len(args) != 8 { 																// A verifier 
 		fmt.Println("Incorrect number of arguments. Expecting 8")
 		return nil, errors.New("Incorrect number of arguments. Expecting 8")
 	}
 
-	if args[2] != SUPPLIER{     // A vérifier la syntaxe // RAJOUTER DES CONDITIONS 
+/*	
+	if args[2] != SUPPLIER{     														// A vérifier la syntaxe 
 		fmt.Println("You are not allowed to create a new part")
 		return nil, errors.New("You are not allowed to create a new part") 
 	}
+
+	if args[2] != AH{     																// Chercher la syntaxe OU 
+		fmt.Println("You are not allowed to create a new part")
+		return nil, errors.New("You are not allowed to create a new part") 
+	}
+*/
 	
-	if args[2] != AH{     // A vérifier la syntaxe // RAJOUTER DES CONDITIONS 
-		fmt.Println("You are not allowed to create a new part")
-		return nil, errors.New("You are not allowed to create a new part") 
-	}
+	var err error
 	
 	var pt Part
 	pt.Id 			= args[0]
@@ -246,12 +252,13 @@ func (t *SimpleChaincode) transferPart_Responsility(stub shim.ChaincodeStubInter
 		return nil, errors.New("Incorrect number of arguments. Expecting 6")
 	}
 
-	if args[1] != CUSTOMER { return nil, errors.New("You are not allowed to transfer a part") }
+//	if args[1] != CUSTOMER { return nil, errors.New("You are not allowed to transfer a part") }
+/*
 	if args[1] != MT_USER { return nil, errors.New("You are not allowed to transfer a part") }
 	if args[1] != SUPPLIER { return nil, errors.New("You are not allowed to transfer a part") }
 	if args[1] != AH { return nil, errors.New("You are not allowed to transfer a part") }
 	if args[1] != SHIPPING { return nil, errors.New("You are not allowed to transfer a part") }
-
+*/
 
 	//Update Part data
 	pAsBytes, err := stub.GetState(args[0])
@@ -303,10 +310,12 @@ func (t *SimpleChaincode)claimOwnershipOnPart(stub shim.ChaincodeStubInterface, 
 		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
 
-	if args[1] != AH { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
+	// if args[1] != AH { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
+
+/*
 	if args[1] != SUPPLIER { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
 	if args[1] != CUSTOMER { return nil, errors.New("You are not allowed to claimOwnership on a Part") } 
-
+*/
 
 	//Update Part owner
 	bAsBytes, err := stub.GetState(args[0])
@@ -492,6 +501,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 
 // A enlever
 // write - invoke function to write key/value pair
+
 func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, value string
 	var err error
@@ -501,9 +511,9 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the key and value to set")
 	}
 
-	key = args[0] //rename for funsies
+	key = args[0] 												//rename for funsies
 	value = args[1]
-	err = stub.PutState(key, []byte(value)) //write the variable into the chaincode state
+	err = stub.PutState(key, []byte(value)) 					//write the variable into the chaincode state
 	if err != nil {
 		return nil, err
 	}
