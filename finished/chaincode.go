@@ -147,10 +147,12 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.transferPart_Responsility(stub, args)
 	} else if function == "claimOwnershipOnPart" {
 		return t.claimOwnershipOnPart(stub, args)
+	
+	/*
 	} else if function == "write" { 						// à enlever plus tard 
 		return t.write(stub, args)
 	}
-    
+    */
     fmt.Println("invoke did not find func: " + function)
 
     return nil, errors.New("Received unknown function invocation")
@@ -363,7 +365,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
     if function == "getPart" {return t.getPart(stub, args[0])}
 	if function == "getAllParts" { return t.getAllParts(stub, args[0]) }
 	if function == "getAllPartsDetails" { return t.getAllPartsDetails(stub, args[0]) }
-	if function == "read" {	return t.read(stub, args)}
+	// if function == "read" {	return t.read(stub, args)}
 	
     fmt.Println("query did not find func: " + function)
 
@@ -388,8 +390,7 @@ func (t *SimpleChaincode) getPart(stub shim.ChaincodeStubInterface, partId strin
 		return nil, errors.New("Failed to get Part #" + partId)
 	}
 	
-	return pAsBytes, nil
-	
+	return pAsBytes, nil	
 }
 
 // =======================================================================================================================================
