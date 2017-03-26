@@ -170,8 +170,8 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 
 	fmt.Println("Running createPart")
 
-	if len(args) != 8 { 																// A verifier 
-		fmt.Println("Incorrect number of arguments. Expecting 8")
+	if len(args) != 7 { 																// A verifier 
+		fmt.Println("Incorrect number of arguments. Expecting 7")
 		return nil, errors.New("Incorrect number of arguments. Expecting 8")
 	}
 
@@ -216,6 +216,7 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 		return nil, err
 	}
 	
+	/*
 	//Update All Parts Array
 	allPAsBytes, err := stub.GetState("allParts")
 	if err != nil {
@@ -233,7 +234,7 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 	if err != nil {
 		return nil, err
 	}
-	
+	*/
 	return nil, nil
 }
 
