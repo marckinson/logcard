@@ -103,22 +103,22 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 
 	// Test du Network (Read, write)
 	// Write the state to the ledger
-	err = stub.PutState("allParts", []byte(args[0]))  			
-	if err != nil {
-		return nil, err
-	}	
+	//err = stub.PutState("allParts", []byte(args[0]))  			
+	// err != nil {
+	//	return nil, err
+	//}	
 
 	
 	var parts AllParts 											// array of string a la place de AllParts	?? // déclaration de la variable parts de type AllParts 
-	jsonAsBytes, _ := json.Marshal(parts)   					// marshal de cet asset AllParts 
+	//parts[0] = "toto"
+	//jsonAsBytes, _ := json.Marshal(parts)   					// marshal de cet asset AllParts 
+	jsonAsBytes, err := json.Marshal(parts)						// marshal de cet asset AllParts
 	err = stub.PutState("allParts",jsonAsBytes)  				//
 	if err != nil {
 		return nil, err
 	}	
 	
-	
-	
-	// Fini 
+
 	
 	return nil, nil
 }
@@ -148,7 +148,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	} else if function == "claimOwnershipOnPart" {
 		return t.claimOwnershipOnPart(stub, args)
 	} 
-	//else if function == "write" { 						// à enlever plus tard 
+	//else if function == "write" { 																		// à enlever plus tard 
 	//	return t.write(stub, args)
 	// }
 
@@ -216,7 +216,8 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 		return nil, err
 	}
 	
-	/*
+	
+	
 	//Update All Parts Array
 	allPAsBytes, err := stub.GetState("allParts")
 	if err != nil {
@@ -234,7 +235,7 @@ func (t *SimpleChaincode) createPart(stub shim.ChaincodeStubInterface, args []st
 	if err != nil {
 		return nil, err
 	}
-	*/
+	
 	return nil, nil
 }
 
