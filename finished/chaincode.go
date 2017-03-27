@@ -109,10 +109,14 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	//}	
 
 	
-	var parts AllParts 											// array of string a la place de AllParts	?? // déclaration de la variable parts de type AllParts 
-	//parts[0] = "toto"
-	//jsonAsBytes, _ := json.Marshal(parts)   					// marshal de cet asset AllParts 
-	jsonAsBytes, err := json.Marshal(parts)						// marshal de cet asset AllParts
+	//var parts AllParts 											// array of string a la place de AllParts	?? // déclaration de la variable parts de type AllParts 
+	// parts[0] = "toto"
+	var allparts AllParts
+	var parts [] string 
+	parts [3] = "toto"
+	allparts = AllParts{ parts }
+	//jsonAsBytes, _ := json.Marshal(allparts)   					// marshal de cet asset AllParts 
+	jsonAsBytes, err := json.Marshal(allparts)						// marshal de cet asset AllParts
 	err = stub.PutState("allParts",jsonAsBytes)  				//
 	if err != nil {
 		return nil, err
